@@ -1,0 +1,8 @@
+﻿Group: Widgets
+FriendlyName: Simple Menu Widget
+SystemName: Widgets.SimpleMenu
+Version: 2.03
+SupportedVersions: 3.70
+Author: NopContent
+DisplayOrder: 1
+FileName: Nop.Plugin.Widgets.SimpleMenu.dll

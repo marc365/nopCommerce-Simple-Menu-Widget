@@ -1,0 +1,31 @@
+﻿@using Nop.Core;
+@using Nop.Core.Data;
+@using Nop.Core.Domain.Stores;
+@using Nop.Core.Infrastructure;
+@using Nop.Plugin.Misc.ContentManagement;
+@{
+    string construct = string.Empty;
+
+    var _contentmanagementService = EngineContext.Current.Resolve<IContentManagementService>();
+    var _pagesRepository = EngineContext.Current.Resolve<IRepository<Nop.Plugin.Misc.ContentManagement.Domain.Page>>();
+    var _storeContext = EngineContext.Current.Resolve<IStoreContext>();    
+    var _storeMappingRepository =  EngineContext.Current.Resolve<IRepository<StoreMapping>>();
+    
+    foreach (var page in _contentmanagementService.GetRecordsByMenu())
+    { 
+        var query = _pagesRepository.Table.SingleOrDefault(p => p.Active && p.PageUrl == page.PageUrl);
+        var store = _storeMappingRepository.Table.SingleOrDefault(s => s.EntityId == query.Id && s.EntityName == "Page" && _storeContext.CurrentStore.Id == s.StoreId);
+        if (store != null || !query.LimitedToStores)
+        {
+            if (page.PageUrl.ToLower() != "home")
+            {
+                construct += "<li><a href=\"/" + page.PageUrl + "\">" + page.MenuTitle + "</a></li>";
+            }
+            else
+            {
+                construct += "<li><a href=\"/\">" + page.MenuTitle + "</a></li>";
+            }
+        }
+     } 
+}
+@Html.Raw(construct)
